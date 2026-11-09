@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
+}
+
+android {
+    namespace 'com.relay.manager'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.relay.manager"
+        minSdk 26
+        targetSdk 35
+        versionCode 2
+        versionName "1.1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(System.getenv('RELAY_KEYSTORE') ?: '../cpasub.keystore')
+            storePassword System.getenv('RELAY_STORE_PASS') ?: 'cpasub123'
+            keyAlias System.getenv('RELAY_ALIAS') ?: 'cpasub'
+            keyPassword System.getenv('RELAY_KEY_PASS') ?: 'cpasub123'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig file(System.getenv('RELAY_KEYSTORE') ?: '../cpasub.keystore').exists() ?
+                signingConfigs.release : signingConfigs.debug
+        }
+        debug {
+            signingConfig file(System.getenv('RELAY_KEYSTORE') ?: '../cpasub.keystore').exists() ?
+                signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+tasks.matching { it.name.startsWith('lintVital') }.configureEach { enabled = false }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.activity:activity-compose:1.9.3'
+    implementation 'androidx.compose.ui:ui:1.7.5'
+    implementation 'androidx.compose.foundation:foundation:1.7.5'
+    implementation 'androidx.compose.material3:material3:1.3.1'
+    implementation 'androidx.compose.material:material-icons-extended:1.7.5'
+    implementation 'androidx.compose.ui:ui-tooling-preview:1.7.5'
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.8.7'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    debugImplementation 'androidx.compose.ui:ui-tooling:1.7.5'
+}

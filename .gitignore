@@ -1,0 +1,22 @@
+# Android / Gradle
+.gradle/
+build/
+app/build/
+captures/
+*.iml
+.idea/
+
+# Local environment
+local.properties
+
+# Signing (do not commit real keystores)
+*.keystore
+*.jks
+
+# Build outputs
+*.apk
+*.aab
+dist/
+
+# Reference clones of upstream projects
+_refs/
